@@ -14,6 +14,8 @@
 		4A762E6E1C1127A100081545 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A762E6D1C1127A100081545 /* Images.xcassets */; };
 		4A762E711C1127A100081545 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A762E6F1C1127A100081545 /* LaunchScreen.xib */; };
 		4A762E7D1C1127A100081545 /* TraceRouterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A762E7C1C1127A100081545 /* TraceRouterTests.m */; };
+		4AAC3AAD1C1130F7004C3A3F /* LVTraceRouteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */; };
+		4AAC3AB01C113543004C3A3F /* LVTraceRouteOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AAC3AAF1C113543004C3A3F /* LVTraceRouteOperation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,10 @@
 		4A762E761C1127A100081545 /* TraceRouterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TraceRouterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A762E7B1C1127A100081545 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A762E7C1C1127A100081545 /* TraceRouterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TraceRouterTests.m; sourceTree = "<group>"; };
+		4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LVTraceRouteManager.m; sourceTree = "<group>"; };
+		4AAC3AAC1C1130F7004C3A3F /* LVTraceRouteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LVTraceRouteManager.h; sourceTree = "<group>"; };
+		4AAC3AAE1C113543004C3A3F /* LVTraceRouteOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LVTraceRouteOperation.h; sourceTree = "<group>"; };
+		4AAC3AAF1C113543004C3A3F /* LVTraceRouteOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LVTraceRouteOperation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +91,10 @@
 				4A762E651C1127A100081545 /* AppDelegate.m */,
 				4A762E671C1127A100081545 /* ViewController.h */,
 				4A762E681C1127A100081545 /* ViewController.m */,
+				4AAC3AAC1C1130F7004C3A3F /* LVTraceRouteManager.h */,
+				4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */,
+				4AAC3AAE1C113543004C3A3F /* LVTraceRouteOperation.h */,
+				4AAC3AAF1C113543004C3A3F /* LVTraceRouteOperation.m */,
 				4A762E6A1C1127A100081545 /* Main.storyboard */,
 				4A762E6D1C1127A100081545 /* Images.xcassets */,
 				4A762E6F1C1127A100081545 /* LaunchScreen.xib */,
@@ -220,8 +230,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A762E691C1127A100081545 /* ViewController.m in Sources */,
+				4AAC3AB01C113543004C3A3F /* LVTraceRouteOperation.m in Sources */,
 				4A762E661C1127A100081545 /* AppDelegate.m in Sources */,
 				4A762E631C1127A100081545 /* main.m in Sources */,
+				4AAC3AAD1C1130F7004C3A3F /* LVTraceRouteManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,7 +311,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -337,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -418,6 +430,7 @@
 				4A762E821C1127A100081545 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4A762E831C1127A100081545 /* Build configuration list for PBXNativeTarget "TraceRouterTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +439,7 @@
 				4A762E851C1127A100081545 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
