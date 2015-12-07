@@ -16,9 +16,11 @@ typedef void (^failBlock)(NSError *);
 @property (assign, nonatomic) int maxTTL;
 @property (assign, nonatomic) int port;
 @property (assign, nonatomic) int tryCount;
+@property (assign, nonatomic) int overallTimeoutSec;
 
 @property (copy) successBlock success;
 @property (copy) failBlock fail;
 
 - (void)addHost:(NSString *)host;
+- (void)cancelTracerouteForHost:(NSString *)host;
 @end

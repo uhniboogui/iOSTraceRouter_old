@@ -21,6 +21,7 @@
     int max_ttl;
     int port;
     int try_cnt;
+    int overall_timeout_sec;
 }
 @property (strong, nonatomic, readwrite) NSString *hostName;
 @end
@@ -31,6 +32,7 @@
                            maxTTL:(int)maxTTL
                              port:(int)destPort
                          tryCount:(int)tryCount
+                overallTimeoutSec:(int)overallTimeoutSec;
 {
     self = [super init];
     
@@ -42,6 +44,7 @@
         max_ttl = maxTTL;
         port = destPort;
         try_cnt = tryCount;
+        overall_timeout_sec = overallTimeoutSec;
     }
     
     return self;
@@ -77,7 +80,7 @@
         if (self.isCancelled) {
             return;
         }
-
+        
         struct addrinfo hints, *hostAddrInfo;
         const char *hostName = [self.hostName UTF8String];
         int status;
@@ -106,6 +109,8 @@
         }
         // host ip : destinationIP (human readable) / ipv4
         
+        NSLog(@"Host Ip Address : %s", hostIp_str);
+        
         // 2. 소켓 생성
         if (self.isCancelled) {
             return;
@@ -121,7 +126,7 @@
             [self sendErrorwithCode:2004 reason:@"Creating send socket failed" description:nil];
             return;
         }
-        
+
         // 3. 소켓 옵션 설정
         if (self.isCancelled) {
             return;
@@ -156,8 +161,10 @@
         char fromIp_str[INET_ADDRSTRLEN];
         
         NSMutableArray *routeArray = [[NSMutableArray alloc] init];
-        bool endFlag = false;
-        for (int ttl = 1; ttl <= max_ttl && !endFlag; ttl++) {
+        
+        double overallStartTime = [LVTraceRouteOperation currentTimeMillis]; // < 60 (sec) * 1000 (msec)
+        bool endFlag = false, timeoutFlag = false;;
+        for (int ttl = 1; ttl <= max_ttl && !endFlag && !timeoutFlag; ttl++) {
             memset(&fromAddr, 0, sizeof(fromAddr));
             
             if(setsockopt(send_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl)) < 0) {
@@ -169,6 +176,11 @@
             for (int try = 0; try < try_cnt; try++) {
                 if (self.isCancelled) {
                     return;
+                }
+                
+                if ([LVTraceRouteOperation currentTimeMillis] > overallStartTime + (overall_timeout_sec * 1000)) {
+                    timeoutFlag = true;
+                    break;
                 }
                 
                 double startTime = [LVTraceRouteOperation currentTimeMillis];
@@ -234,7 +246,8 @@
         NSDictionary *resultDictionary = @{
                                            kHostName: self.hostName,
                                            kIpAddresss: @(hostIp_str),
-                                           kResultArray: routeArray
+                                           kResultArray: routeArray,
+                                           kCompletedFlag: @(endFlag)
                                            };
         close(send_socket);
         close(recv_socket);

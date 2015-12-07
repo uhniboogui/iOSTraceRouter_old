@@ -17,7 +17,7 @@
 
 
 @interface LVTraceRouteManager()<TraceRouteOperationDelegate>
-@property (strong, nonatomic) NSMutableDictionary *checkedHosts;
+@property (strong, nonatomic) NSMutableDictionary *tracerouteDict;
 
 @property (strong, nonatomic) NSOperationQueue *traceRouteOperationQueue;
 @end
@@ -29,15 +29,16 @@
     self = [super init];
     if (self) {
         self.timeoutMillisec = 15000;
-        self.maxTTL = 255;
+        self.maxTTL = 64;
         self.port = 30000;
         self.tryCount = 3;
+        self.overallTimeoutSec = 60;
         
         self.traceRouteOperationQueue = [[NSOperationQueue alloc] init];
         self.traceRouteOperationQueue.name = @"TraceRoute Queue";
         self.traceRouteOperationQueue.maxConcurrentOperationCount = 1;
         
-        self.checkedHosts = [[NSMutableDictionary alloc] init];
+        self.tracerouteDict = [[NSMutableDictionary alloc] init];
     }
     
     return self;
@@ -56,15 +57,27 @@
                                                                                      timeoutMillisec:self.timeoutMillisec
                                                                                               maxTTL:self.maxTTL
                                                                                                 port:self.port
-                                                                                            tryCount:self.tryCount];
+                                                                                            tryCount:self.tryCount
+                                                                                   overallTimeoutSec:self.overallTimeoutSec];
         traceRouteOperation.delegate = self;
         
+        self.tracerouteDict[host] = traceRouteOperation;
         [self.traceRouteOperationQueue addOperation:traceRouteOperation];
     } else {
         if (self.success) {
             self.success([self resultForHost:host]);
         }
         NSLog(@"result - %@", [self resultForHost:host]);
+    }
+}
+
+- (void)cancelTracerouteForHost:(NSString *)host
+{
+    id tracerouteElement = self.tracerouteDict[host];
+    
+    if ([tracerouteElement isKindOfClass:[LVTraceRouteOperation class]]) {
+        [(LVTraceRouteOperation *)tracerouteElement cancel];
+        [self.tracerouteDict removeObjectForKey:host];
     }
 }
 
@@ -89,7 +102,13 @@
     //      10.28.158.7 (-) 0.47  0.32
     //  3   10.22.0.25 (-) 0.93  1.04  1.21
     //  ...
-    NSDictionary *resultDict = self.checkedHosts[host];
+    if (self.tracerouteDict[host] == nil) {
+        return [NSString stringWithFormat:@"Traceroute for host %@ is not created", host];
+    } else if ([self.tracerouteDict[host] isKindOfClass:[LVTraceRouteOperation class]]) {
+        return [NSString stringWithFormat:@"Traceroute for host %@ is now creating", host];
+    }
+    
+    NSDictionary *resultDict = self.tracerouteDict[host];
     NSMutableString *resultStr = [NSMutableString stringWithFormat:@"Destination : %@ (%@)\n", resultDict[kIpAddresss], resultDict[kHostName]];
     [resultStr appendString:@"-------- Trace Route Result --------\n"];
     [resultStr appendString:@"TTL\tIP (HostName) - RoundTripTime\n"];
@@ -110,19 +129,24 @@
         }
     }
     
-    NSLog(@"%@", resultStr);
+    if ([resultDict[kCompletedFlag] boolValue] == YES) {
+        [resultStr appendString:@"Trace route completed"];
+    } else {
+        [resultStr appendString:@"Trace route aborted"];
+    }
+    
     return resultStr;
 }
 
 - (BOOL)isCheckedHost:(NSString *)host
 {
-    return self.checkedHosts[host] != nil;
+    return self.tracerouteDict[host] != nil;
 }
 
 - (void)traceRouteDidFinish:(NSDictionary *)result
 {
     NSString *hostName = result[kHostName];
-    self.checkedHosts[hostName] = result;
+    self.tracerouteDict[hostName] = result;
     
     NSString *resultString = [self resultForHost:hostName];
     NSLog(@"result - %@", resultString);

@@ -12,8 +12,10 @@
 
 @property (strong, nonatomic) UITextField *txfHostName;
 @property (strong, nonatomic) UIButton *doButton;
+@property (strong, nonatomic) UIButton *cancelButton;
 @property (strong, nonatomic) UITextView *resultView;
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
+
 
 @property (strong, nonatomic) LVTraceRouteManager *traceRouteManager;
 @end
@@ -28,7 +30,7 @@
     self.txfHostName = [[UITextField alloc] initWithFrame:CGRectMake(5, 25, 200, 30)];
     self.txfHostName.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.3];
     self.txfHostName.font = [UIFont systemFontOfSize:13];
-    self.txfHostName.text = @"www.naver.com";
+    self.txfHostName.text = @"www.google.com";
     [self.view addSubview:self.txfHostName];
     
     self.doButton = [[UIButton alloc] initWithFrame:CGRectMake(208, 25, 50, 30)];
@@ -37,6 +39,13 @@
     self.doButton.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:0.8 alpha:0.8];
     self.doButton.titleLabel.font = [UIFont systemFontOfSize:11];
     [self.view addSubview:self.doButton];
+    
+    self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(260, 25, 50, 30)];
+    [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(cancelTraceRoute) forControlEvents:UIControlEventTouchUpInside];
+    self.cancelButton.backgroundColor = [UIColor colorWithRed:0.6 green:0.8 blue:0.8 alpha:0.8];
+    self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:11];
+    [self.view addSubview:self.cancelButton];
     
     CGSize fSize = self.view.frame.size;
     self.resultView = [[UITextView alloc] initWithFrame:CGRectMake(5, 58, fSize.width-10, fSize.height-43)];
@@ -67,9 +76,14 @@
         });
     };
     
-    self.traceRouteManager.maxTTL = 20;
+    self.traceRouteManager.maxTTL = 64;
 }
 
+- (void)cancelTraceRoute {
+    [self.traceRouteManager cancelTracerouteForHost:self.txfHostName.text];
+    [self.spinner stopAnimating];
+    self.doButton.enabled = YES;
+}
 - (void)doTraceRouteHost{
     [self.traceRouteManager addHost:self.txfHostName.text];
     [self.spinner startAnimating];

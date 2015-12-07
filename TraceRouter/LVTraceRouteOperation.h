@@ -12,6 +12,7 @@
 #define kIpAddresss @"IpAddress"
 #define kResultArray @"ResultArray"
 #define kRoundTripTime @"RoundTripTime"
+#define kCompletedFlag @"CompletedFlag"
 
 @protocol TraceRouteOperationDelegate <NSObject>
 - (void)traceRouteDidFinish:(NSDictionary *)result;
@@ -25,7 +26,8 @@
                   timeoutMillisec:(int)timeoutMillisec
                            maxTTL:(int)maxTTL
                              port:(int)destPort
-                         tryCount:(int)tryCount;
+                         tryCount:(int)tryCount
+                overallTimeoutSec:(int)overallTimeoutSec;
 
 @property (weak, nonatomic) id<TraceRouteOperationDelegate> delegate;
 @property (strong, nonatomic, readonly) NSString *hostName;
