@@ -143,6 +143,8 @@
     return self.tracerouteDict[host] != nil;
 }
 
+#pragma mark - TraceRouteOperationDelegate
+
 - (void)traceRouteDidFinish:(NSDictionary *)result
 {
     NSString *hostName = result[kHostName];

@@ -207,7 +207,7 @@
                     NSString *fromIpString = [NSString stringWithCString:fromIp_str encoding:NSASCIIStringEncoding];
                     
                     if (currentTTLResult[fromIpString] == nil) {
-                        struct hostent *hostEnt = gethostbyaddr(&fromAddr, sizeof(fromAddr), AF_INET);
+                        struct hostent *hostEnt = gethostbyaddr(&fromAddr.sin_addr, sizeof(fromAddr.sin_addr), AF_INET);
                         NSString *currentHopHostName;
                         
                         if (hostEnt == NULL || hostEnt->h_name == NULL) {
