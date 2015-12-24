@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A48FF631C291B9100E8C287 /* NewTraceRouterManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A48FF621C291B9100E8C287 /* NewTraceRouterManager.m */; };
+		4A48FF661C2BD60500E8C287 /* TraceRouteResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A48FF651C2BD60500E8C287 /* TraceRouteResult.m */; };
 		4A762E631C1127A100081545 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A762E621C1127A100081545 /* main.m */; };
 		4A762E661C1127A100081545 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A762E651C1127A100081545 /* AppDelegate.m */; };
 		4A762E691C1127A100081545 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A762E681C1127A100081545 /* ViewController.m */; };
@@ -14,6 +16,7 @@
 		4A762E6E1C1127A100081545 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A762E6D1C1127A100081545 /* Images.xcassets */; };
 		4A762E711C1127A100081545 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A762E6F1C1127A100081545 /* LaunchScreen.xib */; };
 		4A762E7D1C1127A100081545 /* TraceRouterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A762E7C1C1127A100081545 /* TraceRouterTests.m */; };
+		4A99C5D81C2037B400FFEA45 /* NewTraceRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A99C5D71C2037B400FFEA45 /* NewTraceRouter.m */; };
 		4AAC3AAD1C1130F7004C3A3F /* LVTraceRouteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */; };
 		4AAC3AB01C113543004C3A3F /* LVTraceRouteOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AAC3AAF1C113543004C3A3F /* LVTraceRouteOperation.m */; };
 /* End PBXBuildFile section */
@@ -29,6 +32,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4A48FF611C291B9100E8C287 /* NewTraceRouterManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewTraceRouterManager.h; sourceTree = "<group>"; };
+		4A48FF621C291B9100E8C287 /* NewTraceRouterManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewTraceRouterManager.m; sourceTree = "<group>"; };
+		4A48FF641C2BD60500E8C287 /* TraceRouteResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TraceRouteResult.h; sourceTree = "<group>"; };
+		4A48FF651C2BD60500E8C287 /* TraceRouteResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TraceRouteResult.m; sourceTree = "<group>"; };
 		4A762E5D1C1127A100081545 /* TraceRouter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TraceRouter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A762E611C1127A100081545 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A762E621C1127A100081545 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -42,6 +49,8 @@
 		4A762E761C1127A100081545 /* TraceRouterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TraceRouterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A762E7B1C1127A100081545 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A762E7C1C1127A100081545 /* TraceRouterTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TraceRouterTests.m; sourceTree = "<group>"; };
+		4A99C5D61C2037B400FFEA45 /* NewTraceRouter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewTraceRouter.h; sourceTree = "<group>"; };
+		4A99C5D71C2037B400FFEA45 /* NewTraceRouter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewTraceRouter.m; sourceTree = "<group>"; };
 		4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LVTraceRouteManager.m; sourceTree = "<group>"; };
 		4AAC3AAC1C1130F7004C3A3F /* LVTraceRouteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LVTraceRouteManager.h; sourceTree = "<group>"; };
 		4AAC3AAE1C113543004C3A3F /* LVTraceRouteOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LVTraceRouteOperation.h; sourceTree = "<group>"; };
@@ -95,6 +104,12 @@
 				4AAC3AAB1C1130F7004C3A3F /* LVTraceRouteManager.m */,
 				4AAC3AAE1C113543004C3A3F /* LVTraceRouteOperation.h */,
 				4AAC3AAF1C113543004C3A3F /* LVTraceRouteOperation.m */,
+				4A48FF611C291B9100E8C287 /* NewTraceRouterManager.h */,
+				4A48FF621C291B9100E8C287 /* NewTraceRouterManager.m */,
+				4A48FF641C2BD60500E8C287 /* TraceRouteResult.h */,
+				4A48FF651C2BD60500E8C287 /* TraceRouteResult.m */,
+				4A99C5D61C2037B400FFEA45 /* NewTraceRouter.h */,
+				4A99C5D71C2037B400FFEA45 /* NewTraceRouter.m */,
 				4A762E6A1C1127A100081545 /* Main.storyboard */,
 				4A762E6D1C1127A100081545 /* Images.xcassets */,
 				4A762E6F1C1127A100081545 /* LaunchScreen.xib */,
@@ -230,9 +245,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A762E691C1127A100081545 /* ViewController.m in Sources */,
+				4A99C5D81C2037B400FFEA45 /* NewTraceRouter.m in Sources */,
+				4A48FF661C2BD60500E8C287 /* TraceRouteResult.m in Sources */,
 				4AAC3AB01C113543004C3A3F /* LVTraceRouteOperation.m in Sources */,
 				4A762E661C1127A100081545 /* AppDelegate.m in Sources */,
 				4A762E631C1127A100081545 /* main.m in Sources */,
+				4A48FF631C291B9100E8C287 /* NewTraceRouterManager.m in Sources */,
 				4AAC3AAD1C1130F7004C3A3F /* LVTraceRouteManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -16,7 +16,7 @@
 #define RESPONSE_PACKET_LENGTH 64
 
 
-@interface LVTraceRouteManager()<TraceRouteOperationDelegate>
+@interface LVTraceRouteManager() //<TraceRouteOperationDelegate>
 @property (strong, nonatomic) NSMutableDictionary *tracerouteDict;
 
 @property (strong, nonatomic) NSOperationQueue *traceRouteOperationQueue;
@@ -28,11 +28,11 @@
 {
     self = [super init];
     if (self) {
-        self.timeoutMillisec = 15000;
+        self.timeoutMillisec = 25000;
         self.maxTTL = 64;
-        self.port = 30000;
+        self.port = 80;
         self.tryCount = 3;
-        self.overallTimeoutSec = 60;
+        self.overallTimeoutSec = 30;
         
         self.traceRouteOperationQueue = [[NSOperationQueue alloc] init];
         self.traceRouteOperationQueue.name = @"TraceRoute Queue";
@@ -53,16 +53,31 @@
 {
     // Queue에 추가
     if ([self isCheckedHost:host] == NO) {
-        LVTraceRouteOperation *traceRouteOperation = [[LVTraceRouteOperation alloc] initWithHostname:host
-                                                                                     timeoutMillisec:self.timeoutMillisec
-                                                                                              maxTTL:self.maxTTL
-                                                                                                port:self.port
-                                                                                            tryCount:self.tryCount
-                                                                                   overallTimeoutSec:self.overallTimeoutSec];
-        traceRouteOperation.delegate = self;
+        LVTraceRouteOperation *trOperation = [[LVTraceRouteOperation alloc] initWithHostname:host
+                                                                             timeoutMillisec:self.timeoutMillisec
+                                                                                      maxTTL:self.maxTTL
+                                                                                        port:self.port
+                                                                                    tryCount:self.tryCount
+                                                                           overallTimeoutSec:self.overallTimeoutSec
+                                                                             completionBlock:^(NSDictionary *result) {
+                                                                                 NSString *hostName = result[kHostName];
+                                                                                 self.tracerouteDict[hostName] = result;
+                                                                                 
+                                                                                 NSString *resultString = [self resultForHost:hostName];
+                                                                                 NSLog(@"result - %@", resultString);
+                                                                                 if (self.success) {
+                                                                                     self.success(resultString);
+                                                                                 }
+                                                                             } errorBlock:^(NSError *error) {
+                                                                                 NSLog(@"error : %@", error);
+                                                                                 if (self.fail) {
+                                                                                     self.fail(error);
+                                                                                 }
+                                                                             }];
+        //        traceRouteOperation.delegate = self;
         
-        self.tracerouteDict[host] = traceRouteOperation;
-        [self.traceRouteOperationQueue addOperation:traceRouteOperation];
+        self.tracerouteDict[host] = trOperation;
+        [self.traceRouteOperationQueue addOperation:trOperation];
     } else {
         if (self.success) {
             self.success([self resultForHost:host]);
@@ -86,7 +101,7 @@
     NSMutableString *arrString = [[NSMutableString alloc] init];
     
     [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [arrString appendString:[NSString stringWithFormat:@"%.3f ", [obj doubleValue]]];
+        [arrString appendString:[NSString stringWithFormat:@"%.3f ms ", [obj doubleValue]]];
     }];
     
     return arrString;
@@ -97,10 +112,10 @@
     // Destination : 127.0.0.1 (www.hostname.com)
     // ------- Trace Route Result -------
     // TTL  IP (HostName)  RoundTripTime
-    //  1   10.64.160.2 (-) 1.28  0.87  1.02
-    //  2   10.64.160.2 (-) 0.04
-    //      10.28.158.7 (-) 0.47  0.32
-    //  3   10.22.0.25 (-) 0.93  1.04  1.21
+    //  1   10.64.160.2 (10.64.160.2) 1.28 ms 0.87 ms 1.02 ms
+    //  2   10.64.160.2 (10.64.160.2) 0.04 ms
+    //      10.28.158.7 (10.28.158.7) 0.47 ms 0.32 ms
+    //  3   10.22.0.25 (some-host.name.net) 0.93 ms 1.04 ms 1.21 ms
     //  ...
     if (self.tracerouteDict[host] == nil) {
         return [NSString stringWithFormat:@"Traceroute for host %@ is not created", host];
@@ -130,10 +145,12 @@
     }
     
     if ([resultDict[kCompletedFlag] boolValue] == YES) {
-        [resultStr appendString:@"Trace route completed"];
+        [resultStr appendString:@"Trace route completed "];
     } else {
-        [resultStr appendString:@"Trace route aborted"];
+        [resultStr appendString:@"Trace route aborted "];
     }
+    
+    [resultStr appendString:[NSString stringWithFormat:@"(%.3f sec)", [resultDict[kTotalRunTimeSec] doubleValue]]];
     
     return resultStr;
 }

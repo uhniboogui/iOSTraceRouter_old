@@ -13,13 +13,17 @@
 #define kResultArray @"ResultArray"
 #define kRoundTripTime @"RoundTripTime"
 #define kCompletedFlag @"CompletedFlag"
+#define kTotalRunTimeSec @"TotalRunTimeSec"
 
-@protocol TraceRouteOperationDelegate <NSObject>
-- (void)traceRouteDidFinish:(NSDictionary *)result;
+typedef void (^completionBlock)(NSDictionary *);
+typedef void (^errorBlock)(NSError *);
 
-@optional
-- (void)traceRouteDidFailWithError:(NSError *)error;
-@end
+//@protocol TraceRouteOperationDelegate <NSObject>
+//- (void)traceRouteDidFinish:(NSDictionary *)result;
+//
+//@optional
+//- (void)traceRouter:DidFailWithError:(NSError *)error;
+//@end
 
 @interface LVTraceRouteOperation : NSOperation
 - (instancetype) initWithHostname:(NSString *)hostName
@@ -27,8 +31,10 @@
                            maxTTL:(int)maxTTL
                              port:(int)destPort
                          tryCount:(int)tryCount
-                overallTimeoutSec:(int)overallTimeoutSec;
+                overallTimeoutSec:(int)overallTimeoutSec
+                  completionBlock:(completionBlock)completionBlock
+                       errorBlock:(errorBlock)errorBlock;
 
-@property (weak, nonatomic) id<TraceRouteOperationDelegate> delegate;
+//@property (weak, nonatomic) id<TraceRouteOperationDelegate> delegate;
 @property (strong, nonatomic, readonly) NSString *hostName;
 @end

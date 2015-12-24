@@ -8,13 +8,20 @@
 
 #import "ViewController.h"
 #import "LVTraceRouteManager.h"
+
+#import "NewTraceRouter.h"
 @interface ViewController ()
 
 @property (strong, nonatomic) UITextField *txfHostName;
 @property (strong, nonatomic) UIButton *doButton;
 @property (strong, nonatomic) UIButton *cancelButton;
 @property (strong, nonatomic) UITextView *resultView;
+@property (strong, nonatomic) UITextView *resultView2;
 @property (strong, nonatomic) UIActivityIndicatorView *spinner;
+
+@property (strong, nonatomic) NSOperationQueue *q;
+
+@property (strong, nonatomic) NewTraceRouter *tr;
 
 
 @property (strong, nonatomic) LVTraceRouteManager *traceRouteManager;
@@ -30,7 +37,7 @@
     self.txfHostName = [[UITextField alloc] initWithFrame:CGRectMake(5, 25, 200, 30)];
     self.txfHostName.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.3];
     self.txfHostName.font = [UIFont systemFontOfSize:13];
-    self.txfHostName.text = @"www.google.com";
+    self.txfHostName.text = @"www.coursera.com";
     [self.view addSubview:self.txfHostName];
     
     self.doButton = [[UIButton alloc] initWithFrame:CGRectMake(208, 25, 50, 30)];
@@ -48,11 +55,17 @@
     [self.view addSubview:self.cancelButton];
     
     CGSize fSize = self.view.frame.size;
-    self.resultView = [[UITextView alloc] initWithFrame:CGRectMake(5, 58, fSize.width-10, fSize.height-43)];
+    self.resultView = [[UITextView alloc] initWithFrame:CGRectMake(5, 58, fSize.width-10, fSize.height/2)];
     self.resultView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.1];
     self.resultView.editable = NO;
     [self.resultView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [self.view addSubview:self.resultView];
+    
+    self.resultView2 = [[UITextView alloc] initWithFrame:CGRectMake(5, 60 + (fSize.height-43)/2, fSize.width-10, (fSize.height-43)/2 -62)];
+    self.resultView2.backgroundColor = [UIColor colorWithRed:0.9 green:0.8 blue:0.7 alpha:0.8];
+    self.resultView2.editable = NO;
+    [self.resultView2 setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+//    [self.view addSubview:self.resultView2];
     
     self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake((fSize.width/2)-10, (fSize.height/2)-10, 20, 20)];
     self.spinner.color = [UIColor blackColor];
@@ -64,6 +77,24 @@
     self.traceRouteManager.success = ^(NSString *resultString) {
         dispatch_async(dispatch_get_main_queue(), ^{
             wself.resultView.text = resultString;
+            
+//            wself.tr = [[NewTraceRouter alloc] initWithHostname:@"www.coursera.com" timeoutMillisec:25000 maxTTL:64 tryCount:3 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
+//                NSString *resultStr = [NewTraceRouter resultForDictionary:resultDictionary];
+//                
+//                wself.resultView2.text = resultStr;
+//                
+//                [wself.spinner stopAnimating];
+//                wself.doButton.enabled = YES;
+//                wself.tr = nil;
+//            } errorBlock:^(NSError *error) {
+//                NSLog(@"error : %@", error);
+//                
+//                [wself.spinner stopAnimating];
+//                wself.doButton.enabled = YES;
+//                wself.tr = nil;
+//            }];
+//            
+//            [wself.tr startTraceRoute];
             [wself.spinner stopAnimating];
             wself.doButton.enabled = YES;
         });
@@ -76,6 +107,8 @@
         });
     };
     
+    self.q = [[NSOperationQueue alloc] init];
+    
     self.traceRouteManager.maxTTL = 64;
 }
 
@@ -86,6 +119,34 @@
 }
 - (void)doTraceRouteHost{
     [self.traceRouteManager addHost:self.txfHostName.text];
+    
+    __block typeof(self) wself = self;
+//    self.tr = [[NewTraceRouter alloc] initWithHostname:self.txfHostName.text timeoutMillisec:25000 maxTTL:64 tryCount:3 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
+    self.tr = [[NewTraceRouter alloc] initWithHostname:self.txfHostName.text tryCount:3 maxTTL:64 responseTimeoutMilliSec:25000 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
+        NSString *resultStr = [NewTraceRouter resultForDictionary:resultDictionary];
+        
+        wself.resultView2.text = resultStr;
+        
+//        [wself.spinner stopAnimating];
+//        wself.doButton.enabled = YES;
+        wself.tr = nil;
+    } failureBlock:^(NSError *error) {
+        NSLog(@"error : %@", error);
+        
+//        [wself.spinner stopAnimating];
+//        wself.doButton.enabled = YES;
+        wself.tr = nil;
+    }];
+    
+    [self.q addOperationWithBlock:^{
+        
+        [wself.tr startTraceRoute];
+        
+    }];
+    
+    
+    
+    
     [self.spinner startAnimating];
     self.doButton.enabled = NO;
 }
