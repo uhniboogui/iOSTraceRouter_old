@@ -17,5 +17,9 @@
 #define kTotalRunTimeSec @"TotalRunTimeSec"
 
 @interface TraceRouteResult : NSObject<NewTraceRouterDelegate>
-
+@property (strong, nonatomic, readonly) NSString *hostName;
+@property (strong, nonatomic, readonly) NSString *hostIPAddress;
+@property (strong, nonatomic, readonly) NSMutableArray *resultsForTTL;
+@property (assign, nonatomic, readonly) BOOL isCompleted;
+@property (assign, nonatomic, readonly) double elapsedTime;
 @end

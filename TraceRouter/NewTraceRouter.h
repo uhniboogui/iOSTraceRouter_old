@@ -51,10 +51,10 @@ typedef NS_ENUM(NSInteger, TraceRouterErrorCode) {
                      failureBlock:(failureBlock)failureBlock;
 - (void)startTraceRoute;
 
-+ (NSString *)resultForDictionary:(NSDictionary *)resultDict;
+//+ (NSString *)resultForDictionary:(NSDictionary *)resultDict;
 @end
 
 @protocol NewTraceRouterDelegate <NSObject>
-- (void)didReceiveReceiveForTTL:(int)ttl fromAddr:(struct sockaddr_in)fromAddr roundTripTime:(double)roundTripTime;
+- (void)didReceiveResponseForTTL:(int)ttl fromAddr:(struct sockaddr_in)fromAddr roundTripTime:(double)roundTripTime;
 - (void)didFinishTraceRouteWithEndFlag:(BOOL)endFlag elapsedTime:(double)elapsedTime;
 @end

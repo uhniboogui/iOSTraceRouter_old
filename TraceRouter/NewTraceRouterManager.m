@@ -9,7 +9,7 @@
 #import "NewTraceRouterManager.h"
 #import "NewTraceRouter.h"
 
-@interface NewTraceRouterManager()<NewTraceRouterDelegate>
+@interface NewTraceRouterManager()
 @property (nonatomic, strong) NSMutableDictionary *trResults;
 @end
 

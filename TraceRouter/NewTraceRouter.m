@@ -518,7 +518,7 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
                 double roundTripTime = [[self class] currentTimeMillis] - sendTime;
                 sendTime = 0;
                 
-                [self.resultDelegate didReceiveReceiveForTTL:ttl fromAddr:addr roundTripTime:roundTripTime];
+                [self.resultDelegate didReceiveResponseForTTL:ttl fromAddr:addr roundTripTime:roundTripTime];
                 // Round Trip Time 은 어떻게 넘길까
             } else {
                 NSLog(@"Received the other packet");

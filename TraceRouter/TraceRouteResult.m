@@ -49,7 +49,7 @@
     return addrHostName;
 }
 
-- (void)didReceiveReceiveForTTL:(int)ttl fromAddr:(struct sockaddr_in)fromAddr roundTripTime:(double)roundTripTime
+- (void)didReceiveResponseForTTL:(int)ttl fromAddr:(struct sockaddr_in)fromAddr roundTripTime:(double)roundTripTime
 {
     char addr_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &fromAddr.sin_addr.s_addr, addr_str, sizeof(addr_str));
