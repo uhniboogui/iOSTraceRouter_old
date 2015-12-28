@@ -10,6 +10,7 @@
 #import "LVTraceRouteManager.h"
 
 #import "NewTraceRouter.h"
+#import "NewTraceRouterManager.h"
 @interface ViewController ()
 
 @property (strong, nonatomic) UITextField *txfHostName;
@@ -22,7 +23,7 @@
 @property (strong, nonatomic) NSOperationQueue *q;
 
 @property (strong, nonatomic) NewTraceRouter *tr;
-
+@property (strong, nonatomic) NewTraceRouterManager *traceRouteManagerNew;
 
 @property (strong, nonatomic) LVTraceRouteManager *traceRouteManager;
 @end
@@ -110,6 +111,19 @@
     self.q = [[NSOperationQueue alloc] init];
     
     self.traceRouteManager.maxTTL = 64;
+    
+    self.traceRouteManagerNew = [[NewTraceRouterManager alloc] initWithCompletion:^(NSDictionary *resultDict, NSError *error) {
+        [wself.spinner stopAnimating];
+        wself.doButton.enabled = YES;
+        
+        if (resultDict != nil) {
+            // wself.resultView2.text에 결과 뿌려주기
+        }
+        
+        if (error != nil) {
+            wself.resultView2.text = error.description;
+        }
+    }];
 }
 
 - (void)cancelTraceRoute {
@@ -118,37 +132,26 @@
     self.doButton.enabled = YES;
 }
 - (void)doTraceRouteHost{
-    [self.traceRouteManager addHost:self.txfHostName.text];
+    [self.traceRouteManagerNew tracerouteWithHost:self.txfHostName.text];
+//    [self.traceRouteManager addHost:self.txfHostName.text];
     
-    __block typeof(self) wself = self;
-//    self.tr = [[NewTraceRouter alloc] initWithHostname:self.txfHostName.text timeoutMillisec:25000 maxTTL:64 tryCount:3 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
-    self.tr = [[NewTraceRouter alloc] initWithHostname:self.txfHostName.text tryCount:3 maxTTL:64 responseTimeoutMilliSec:25000 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
-        NSString *resultStr = [NewTraceRouter resultForDictionary:resultDictionary];
-        
-        wself.resultView2.text = resultStr;
-        
+//    __block typeof(self) wself = self;
+
+//    self.tr = [[NewTraceRouter alloc] initWithHostname:self.txfHostName.text tryCount:3 maxTTL:64 responseTimeoutMilliSec:25000 overallTimeoutSec:240 completionBlock:^(NSDictionary *resultDictionary) {
+//        NSString *resultStr = [NewTraceRouter resultForDictionary:resultDictionary];
+//        wself.resultView2.text = resultStr;
 //        [wself.spinner stopAnimating];
 //        wself.doButton.enabled = YES;
-        wself.tr = nil;
-    } failureBlock:^(NSError *error) {
-        NSLog(@"error : %@", error);
-        
+//        wself.tr = nil;
+//    } failureBlock:^(NSError *error) {
+//        NSLog(@"error : %@", error);
 //        [wself.spinner stopAnimating];
 //        wself.doButton.enabled = YES;
-        wself.tr = nil;
-    }];
-    
-    [self.q addOperationWithBlock:^{
-        
-        [wself.tr startTraceRoute];
-        
-    }];
-    
-    
-    
-    
-    [self.spinner startAnimating];
-    self.doButton.enabled = NO;
+//        wself.tr = nil;
+//    }];
+//    
+//    [self.spinner startAnimating];
+//    self.doButton.enabled = NO;
 }
 
 - (void)tracerouteResult:(NSNotification *)notification
