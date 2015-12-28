@@ -8,6 +8,7 @@
 
 #import "NewTraceRouterManager.h"
 #import "NewTraceRouter.h"
+#import "TraceRouteResult.h"
 
 @interface NewTraceRouterManager()
 @property (nonatomic, strong) NSMutableDictionary *trResults;
@@ -35,6 +36,7 @@
 - (void)tracerouteWithHost:(NSString *)host
 {
     if ([self isCheckedHost:host] == NO) {
+        
         NewTraceRouter *newTr = [[NewTraceRouter alloc] initWithHostname:host tryCount:self.tryCount maxTTL:self.maxTTL responseTimeoutMilliSec:self.responseTimeoutMSec overallTimeoutSec:self.overallTimeoutSec completionBlock:^(NSDictionary *resultDict) {
             if (self.completion != nil) {
                 self.completion(resultDict, nil);
@@ -44,6 +46,9 @@
                 self.completion(nil, error);
             }
         }];
+        
+        TraceRouteResult *trResult = [[TraceRouteResult alloc] init];
+        newTr.resultDelegate = trResult;
         
         // newTr을 dictionary에 넣어서 관리??
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -64,14 +69,4 @@
     return self.trResults[host] != nil;
 }
 
-#pragma mark - NewTraceRouterDelegate
-- (void)traceRouter:(NewTraceRouter *)traceRouter didReceiveResponseICMPPacketHeader:(ICMPHeader)icmpHeader
-{
-    // traceRouter의 호스트로???
-}
-
-- (void)traceRouter:(NewTraceRouter *)traceRouter didFailWithError:(NSError *)error
-{
-    
-}
 @end
