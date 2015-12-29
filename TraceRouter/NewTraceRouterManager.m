@@ -11,7 +11,8 @@
 #import "TraceRouteResult.h"
 
 @interface NewTraceRouterManager()
-@property (nonatomic, strong) NSMutableDictionary *trResults;
+@property (nonatomic, strong) NSMutableDictionary *traceRouteResults;
+@property (nonatomic, strong) NSMutableDictionary *runningTraceRouters;
 @end
 
 @implementation NewTraceRouterManager
@@ -20,7 +21,8 @@
     self = [super init];
     
     if (self) {
-        self.trResults = [[NSMutableDictionary alloc] init];
+        self.traceRouteResults = [[NSMutableDictionary alloc] init];
+        self.runningTraceRouters = [[NSMutableDictionary alloc] init];
         
         self.tryCount = 3;
         self.maxTTL = 64;
@@ -37,18 +39,25 @@
 {
     if ([self isCheckedHost:host] == NO) {
         
+        __block typeof(self) wself = self;
         NewTraceRouter *newTr = [[NewTraceRouter alloc] initWithHostname:host tryCount:self.tryCount maxTTL:self.maxTTL responseTimeoutMilliSec:self.responseTimeoutMSec overallTimeoutSec:self.overallTimeoutSec completionBlock:^(NSDictionary *resultDict) {
-            if (self.completion != nil) {
-                self.completion(resultDict, nil);
+            [wself.runningTraceRouters removeObjectForKey:host];
+            if (wself.completion != nil) {
+                wself.completion(resultDict, nil);
             }
         } failureBlock:^(NSError *error) {
-            if (self.completion != nil) {
-                self.completion(nil, error);
+            [wself.runningTraceRouters removeObjectForKey:host];
+            [wself.traceRouteResults removeObjectForKey:host];
+            if (wself.completion != nil) {
+                wself.completion(nil, error);
             }
         }];
         
         TraceRouteResult *trResult = [[TraceRouteResult alloc] init];
         newTr.resultDelegate = trResult;
+        
+        self.runningTraceRouters[host] = newTr;
+        self.traceRouteResults[host] = trResult;
         
         // newTr을 dictionary에 넣어서 관리??
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -59,14 +68,14 @@
         // 이미 TraceRoute를 수행한 Host의 경우
         if (self.completion) {
             // 수행한 결과 넘김
-            self.completion(self.trResults[host], nil);
+            self.completion(self.traceRouteResults[host], nil);
         }
     }
 }
 
 - (BOOL)isCheckedHost:(NSString *)host
 {
-    return self.trResults[host] != nil;
+    return self.traceRouteResults[host] != nil;
 }
 
 @end

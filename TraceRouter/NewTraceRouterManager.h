@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class NewTraceRouterManager;
 
 typedef void (^CompletionBlock)(NSDictionary *, NSError *);
 

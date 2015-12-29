@@ -366,6 +366,15 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
     //------------------------------------------
 
 //    int err = 0;
+    double currentTime = [[self class] currentTimeMillis];
+    if (currentTime > traceroute_end_time || self.sequenceNumber % try_cnt > max_ttl) {
+        // OVERALL TIMEOUT OR MAX TTL
+        [self.resultDelegate didFinishTraceRouteWithEndFlag:NO elapsedTime:currentTime - traceroute_start_time];
+        if (self.completion) {
+            self.completion(nil);
+        }
+    }
+    
     NSData *payload;
     NSMutableData *packet;
     ICMPHeader *icmpPtr;
@@ -515,7 +524,7 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
 //                [self.resultDelegate traceRouter:self didReceiveResponseICMPPacketHeader:icmpPtr];
                 int ttl = self.sequenceNumber / try_cnt;
                 // if (sendTime == 0) { // error occured }
-                double roundTripTime = [[self class] currentTimeMillis] - sendTime;
+                double roundTripTime = recvTime - sendTime;
                 sendTime = 0;
                 
                 [self.resultDelegate didReceiveResponseForTTL:ttl fromAddr:addr roundTripTime:roundTripTime];
@@ -536,7 +545,8 @@ static uint16_t in_cksum(const void *buffer, size_t bufferLen)
     
     free(buffer);
     
-    if (endFlag || traceroute_end_time <= [[self class] currentTimeMillis]) {
+    if (endFlag || (self.sequenceNumber + 1) % try_cnt != 0) {
+        [self.resultDelegate didFinishTraceRouteWithEndFlag:YES elapsedTime:recvTime - traceroute_start_time];
         if (self.completion) {
             self.completion(nil);
         }
